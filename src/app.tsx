@@ -1,12 +1,19 @@
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
+import * as Tone from 'tone';
+
 async function addSticky() {
   const stickyNote = await miro.board.createStickyNote({
     content: 'Hello, World!',
   });
 
   await miro.board.viewport.zoomTo(stickyNote);
+}
+
+async function startOrchestra() {
+  await Tone.start()
+	console.log('audio is ready')
 }
 
 const App: React.FC = () => {
@@ -20,20 +27,19 @@ const App: React.FC = () => {
         <img src="/src/assets/congratulations.png" alt="" />
       </div>
       <div className="cs1 ce12">
-        <h1>Congratulations!</h1>
-        <p>You've just created your first Miro app!</p>
+        <h1>Timer Orchestra!</h1>
+        <p>Make music together.</p>
         <p>
-          To explore more and build your own app, see the Miro Developer
-          Platform documentation.
+          Create widgets on the board to try it out.
         </p>
       </div>
       <div className="cs1 ce12">
         <a
           className="button button-primary"
-          target="_blank"
-          href="https://developers.miro.com"
+          href=""
+          onClick={startOrchestra}
         >
-          Read the documentation
+          Start Orchestra
         </a>
       </div>
     </div>
