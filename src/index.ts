@@ -1,3 +1,4 @@
+import { BoardViewport, Item, PositionMixin, Rect, StickyNote, WidgetMixin } from '@mirohq/websdk-types';
 import * as Tone from 'tone';
 
 
@@ -22,14 +23,7 @@ async function init() {
     console.log(event);
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      console.log("x: " + event.items[0].x);
-      console.log("y: " + event.items[0].y);
-      const viewportOrigin = viewport.x + (viewport.width / 2);
-      const widgetOrigin = event.items[0].x + (event.items[0].width / 2);
-      const xOffset = viewportOrigin - widgetOrigin;
-      var panRatio =-1 * (xOffset * 2) / viewport.width;
-      panRatio = Math.min(Math.max(panRatio, -1), 1);
-      console.log(panRatio);
+      const panRatio = calculateStereoLocation(viewport, event.items[0]);
       panner1.pan.rampTo(panRatio, 0.001);
     }
     const now = Tone.now();
@@ -42,14 +36,7 @@ async function init() {
     console.log(event);
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      console.log("x: " + event.items[0].x);
-      console.log("y: " + event.items[0].y);
-      const viewportOrigin = viewport.x + (viewport.width / 2);
-      const widgetOrigin = event.items[0].x + (event.items[0].width / 2);
-      const xOffset = viewportOrigin - widgetOrigin;
-      var panRatio =-1 * (xOffset * 2) / viewport.width;
-      panRatio = Math.min(Math.max(panRatio, -1), 1);
-      console.log(panRatio);
+      const panRatio = calculateStereoLocation(viewport, event.items[0]);
       panner2.pan.rampTo(panRatio, 0.001);
     }
     const now = Tone.now();
@@ -62,14 +49,7 @@ async function init() {
     console.log(event);
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      console.log("x: " + event.items[0].x);
-      console.log("y: " + event.items[0].y);
-      const viewportOrigin = viewport.x + (viewport.width / 2);
-      const widgetOrigin = event.items[0].x + (event.items[0].width / 2);
-      const xOffset = viewportOrigin - widgetOrigin;
-      var panRatio =-1 * (xOffset * 2) / viewport.width;
-      panRatio = Math.min(Math.max(panRatio, -1), 1);
-      console.log(panRatio);
+      const panRatio = calculateStereoLocation(viewport, event.items[0]);
       panner3.pan.rampTo(panRatio, 0.001);
     }
 
@@ -83,14 +63,7 @@ async function init() {
     console.log(event);
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      console.log("x: " + event.items[0].x);
-      console.log("y: " + event.items[0].y);
-      const viewportOrigin = viewport.x + (viewport.width / 2);
-      const widgetOrigin = event.items[0].x + (event.items[0].width / 2);
-      const xOffset = viewportOrigin - widgetOrigin;
-      var panRatio =-1 * (xOffset * 2) / viewport.width;
-      panRatio = Math.min(Math.max(panRatio, -1), 1);
-      console.log(panRatio);
+      const panRatio = calculateStereoLocation(viewport, event.items[0]);
       panner4.pan.rampTo(panRatio, 0.001);
     }
     const now = Tone.now();
@@ -98,6 +71,19 @@ async function init() {
     synth4.triggerRelease(now + 0.1);
   });
 }
+
+function calculateStereoLocation(viewport: Rect, widget: Rect): number {
+  console.log("x: " + widget.x);
+  console.log("y: " + widget.y);
+  const viewportOrigin = viewport.x + (viewport.width / 2);
+  const widgetOrigin = widget.x + (widget.width / 2);
+  const xOffset = viewportOrigin - widgetOrigin;
+  var panRatio =-1 * (xOffset * 2) / viewport.width;
+  panRatio = Math.min(Math.max(panRatio, -1), 1);
+  console.log(panRatio);
+  return panRatio;
+}
+
 
 function setPan(panner: Tone.Panner, panRatio: number){
   panner.pan.rampTo(panRatio, 0.001);
