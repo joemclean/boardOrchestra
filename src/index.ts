@@ -24,7 +24,7 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      panner1.pan.rampTo(panRatio, 0.001);
+      setPan(panner1, panRatio);
     }
     const now = Tone.now();
     synth1.triggerAttack("C3", now);
@@ -37,7 +37,7 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      panner2.pan.rampTo(panRatio, 0.001);
+      setPan(panner2, panRatio);
     }
     const now = Tone.now();
     synth2.triggerAttack("G1", now);
@@ -50,7 +50,7 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      panner3.pan.rampTo(panRatio, 0.001);
+      setPan(panner3, panRatio);
     }
 
     const now = Tone.now();
@@ -64,7 +64,7 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      panner4.pan.rampTo(panRatio, 0.001);
+      setPan(panner4, panRatio);
     }
     const now = Tone.now();
     synth4.triggerAttack("C2", now);
