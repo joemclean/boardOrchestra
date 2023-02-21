@@ -10,9 +10,9 @@ async function addSticky() {
 }
 
 const App: React.FC = () => {
-  React.useEffect(() => {
-    addSticky();
-  }, []);
+  // React.useEffect(() => {
+  //   addSticky();
+  // }, []);
 
   return (
     <div className="grid wrapper">
