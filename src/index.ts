@@ -1,12 +1,10 @@
 import { BoardViewport, Item, PositionMixin, Rect, StickyNote, WidgetMixin } from '@mirohq/websdk-types';
 import * as Tone from 'tone';
 
-
 const panner1 = new Tone.Panner().toDestination();
 const panner2 = new Tone.Panner().toDestination();
 const panner3 = new Tone.Panner().toDestination();
 const panner4 = new Tone.Panner().toDestination();
-
 
 const synth1 = new Tone.Synth().connect(panner1);
 const synth2 = new Tone.Synth().connect(panner2);
@@ -84,9 +82,63 @@ function calculateStereoLocation(viewport: Rect, widget: Rect): number {
   return panRatio;
 }
 
-
 function setPan(panner: Tone.Panner, panRatio: number){
   panner.pan.rampTo(panRatio, 0.001);
 }
+
+// create a new Tone.js Transport object
+const transport = Tone.Transport;
+
+// set the transport time signature to 4/4
+transport.timeSignature = [4, 4];
+
+// create a new Tone.js MembraneSynth object to use as the kick drum
+const kick = new Tone.MembraneSynth().toDestination();
+
+const hihat = new Tone.MetalSynth({
+  envelope: {
+    attack: 0.001,
+    decay: 0.1,
+    release: 0.01,
+  },
+  harmonicity: 5.1,
+  modulationIndex: 32,
+  resonance: 4000,
+  octaves: 1.5,
+}).toDestination();
+
+const hihat2 = new Tone.MetalSynth({
+  envelope: {
+    attack: 0.001,
+    decay: 0.01,
+    release: 0.01,
+  },
+  harmonicity: 5.1,
+  modulationIndex: 32,
+  resonance: 4000,
+  octaves: 1.5,
+}).toDestination();
+
+// create a new Tone.js Sequence object
+let iterator = 0;
+const sequence = new Tone.Sequence((time, note) => {
+  
+  // check if this is the 4th beat of the measure
+  if (iterator % 8 === 0) {
+    // play the kick drum sound
+    kick.triggerAttackRelease("C1", "8n", time);
+  } else if ((iterator+4) % 8 === 0) {
+    hihat.triggerAttackRelease("C1", "8n", time);
+  } else {
+    // this function will be called on every other sixteenth note
+    hihat2.triggerAttackRelease("C1", "8n", time);
+    console.log("Event fired at time: " + time);
+  }
+  iterator++;
+}, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "16n");
+
+// start the transport and the sequence
+transport.start();
+sequence.start();
 
 init();
