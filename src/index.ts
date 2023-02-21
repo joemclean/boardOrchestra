@@ -11,6 +11,7 @@ async function init() {
   });
 
   miro.board.ui.on('experimental:items:update', (event)=> {
+    console.log("Item update");
     console.log(event);
     const now = Tone.now();
     synth1.triggerAttack("C3", now);
@@ -18,6 +19,7 @@ async function init() {
   });
 
   miro.board.ui.on('selection:update', (event)=> {
+    console.log("Selection update");
     console.log(event);
     if (event.items.length > 0 && event.items[0].type != "connector") {
       console.log("x: " + event.items[0].x);
@@ -29,6 +31,7 @@ async function init() {
   });
 
   miro.board.ui.on('items:create', (event)=> {
+    console.log("Item created");
     console.log(event);
     const now = Tone.now();
     synth3.triggerAttack("G3", now);
@@ -36,6 +39,7 @@ async function init() {
   });
 
   miro.board.ui.on('items:delete', (event)=> {
+    console.log("Item deleted");
     console.log(event);
     const now = Tone.now();
     synth4.triggerAttack("C2", now);
