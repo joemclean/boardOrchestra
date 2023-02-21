@@ -6,10 +6,15 @@ const panner2 = new Tone.Panner().toDestination();
 const panner3 = new Tone.Panner().toDestination();
 const panner4 = new Tone.Panner().toDestination();
 
-const synth1 = new Tone.Synth().connect(panner1);
-const synth2 = new Tone.Synth().connect(panner2);
-const synth3 = new Tone.Synth().connect(panner3);
-const synth4 = new Tone.Synth().connect(panner4);
+const synth1 = new Tone.Synth().toDestination();
+const synth2 = new Tone.Synth().toDestination();
+const synth3 = new Tone.Synth().toDestination();
+const synth4 = new Tone.Synth().toDestination();
+
+let note1scheduler = 0;
+let note2scheduler = 0;
+let note3scheduler = 0;
+let note4scheduler = 0;
 
 async function init() {
   miro.board.ui.on('icon:click', async () => {
@@ -23,10 +28,8 @@ async function init() {
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
       setPan(panner1, panRatio);
+      note1scheduler = 1;
     }
-    const now = Tone.now();
-    synth1.triggerAttack("C3", now);
-    synth1.triggerRelease(now + 0.1);
   });
 
   miro.board.ui.on('selection:update', async (event)=> {
@@ -36,10 +39,8 @@ async function init() {
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
       setPan(panner2, panRatio);
+      note2scheduler = 1;
     }
-    const now = Tone.now();
-    synth2.triggerAttack("G1", now);
-    synth2.triggerRelease(now + 0.1);
   });
 
   miro.board.ui.on('items:create', async (event)=> {
@@ -49,11 +50,8 @@ async function init() {
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
       setPan(panner3, panRatio);
+      note3scheduler = 1;
     }
-
-    const now = Tone.now();
-    synth3.triggerAttack("G3", now);
-    synth3.triggerRelease(now + 0.1);
   });
 
   miro.board.ui.on('items:delete', async (event)=> {
@@ -63,10 +61,8 @@ async function init() {
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
       setPan(panner4, panRatio);
+      note4scheduler = 1;
     }
-    const now = Tone.now();
-    synth4.triggerAttack("C2", now);
-    synth4.triggerRelease(now + 0.1);
   });
 }
 
@@ -121,6 +117,7 @@ const hihat2 = new Tone.MetalSynth({
 
 // create a new Tone.js Sequence object
 let iterator = 0;
+
 const sequence = new Tone.Sequence((time, note) => {
   
   // check if this is the 4th beat of the measure
@@ -132,8 +129,36 @@ const sequence = new Tone.Sequence((time, note) => {
   } else {
     // this function will be called on every other sixteenth note
     hihat2.triggerAttackRelease("C1", "8n", time);
-    console.log("Event fired at time: " + time);
   }
+
+  if (iterator % 8 === 0) {
+    if (note1scheduler == 1) {
+      synth1.triggerAttackRelease("C3", "8n", time);
+      note1scheduler = 0;
+      console.log("note1");
+    };
+  
+    if (note2scheduler == 1) {
+      synth2.triggerAttackRelease("G1", "8n", time);
+      note2scheduler = 0;
+      console.log("note2");
+    };
+  
+    if (note3scheduler == 1) {
+      synth3.triggerAttackRelease("G3", "8n", time);
+      note3scheduler = 0;
+      console.log("note3");
+    };
+  
+    if (note4scheduler == 1) {
+      synth4.triggerAttackRelease("C2", "8n", time);
+      synth4.triggerRelease(time + 0.1);
+      note4scheduler = 0;
+      console.log("note4");
+    };
+    
+  }
+
   iterator++;
 }, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "16n");
 
