@@ -1,15 +1,7 @@
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
-import * as Tone from 'tone';
-
-import { startSequencer, stopSequencer } from './orchestra';
-
-async function startOrchestra() {
-  await Tone.start();
-  Tone.Transport.start();
-	console.log('audio is ready');
-}
+import { startOrchestra, startSequencer, stopSequencer } from './orchestra';
 
 const App: React.FC = () => {
 
@@ -23,20 +15,22 @@ const App: React.FC = () => {
         >
           Start Orchestra
         </a>
-        <a
-          className="button button-primary"
-          href=""
-          onClick={startSequencer}
-        >
-          Play
-        </a>
-        <a
-          className="button button-primary"
-          href=""
-          onClick={stopSequencer}
-        >
-          Stop
-        </a>
+        <div>
+          <a
+            className="button button-primary"
+            href=""
+            onClick={startSequencer}
+          >
+            Play
+          </a>
+          <a
+            className="button button-primary"
+            href=""
+            onClick={stopSequencer}
+          >
+            Stop
+          </a>
+        </div>
       </div>
     </div>
   );
