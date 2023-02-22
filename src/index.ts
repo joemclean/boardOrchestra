@@ -3,6 +3,7 @@ import * as Tone from 'tone';
 import { GainToAudio } from 'tone';
 
 let widgetSelected: boolean = false;
+let hasInteracted: boolean = false;
 
 const synth1 = new Tone.Synth(
   {
@@ -189,7 +190,9 @@ let iterator = 0;
 
 // create a new Tone.js Sequence object
 const sequence = new Tone.Sequence((time, note) => {
-  
+  if (hasInteracted == false) {
+    return;
+  }
   // Autogen drums
   if (Math.random() > 0.1 && widgetSelected) {
     hihat2.triggerAttackRelease("C1", "8n", time);
@@ -276,6 +279,7 @@ async function init() {
   });
 
   miro.board.ui.on('selection:update', async (event)=> {
+    hasInteracted = true;
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);

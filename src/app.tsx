@@ -13,12 +13,6 @@ const App: React.FC = () => {
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <p>Make music together.</p>
-        <p>
-          Create widgets on the board to try it out.
-        </p>
-      </div>
-      <div className="cs1 ce12">
         <a
           className="button button-primary"
           href=""
