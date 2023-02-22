@@ -23,7 +23,7 @@ class App extends React.Component {
           <a
             className="button button-primary"
             href=""
-            onClick={() => {startOrchestraInstance()}}
+            onClick={() => {startOrchestraInstance}}
           >
             Start Orchestra
           </a>
@@ -31,14 +31,14 @@ class App extends React.Component {
             <a
               className="button button-primary"
               href=""
-              onClick={() => {startOrchestraSequencer()}}
+              onClick={() => {startOrchestraSequencer}}
             >
               Play
             </a>
             <a
               className="button button-primary"
               href=""
-              onClick={() => {stopOrchestraSequencer()}}
+              onClick={() => {stopOrchestraSequencer();}}
             >
               Stop
             </a>
