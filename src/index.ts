@@ -2,7 +2,6 @@ import { BoardViewport, Item, PositionMixin, Rect, StickyNote, WidgetMixin } fro
 import * as Tone from 'tone';
 import { GainToAudio } from 'tone';
 
-
 let widgetSelected: boolean = false;
 
 const synth1 = new Tone.Synth(
@@ -238,11 +237,12 @@ const sequence = new Tone.Sequence((time, note) => {
   iterator++;
 }, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "16n");
 
-// start the transport and the sequence
-// export function startOrchestra() {
-//   transport.start();
-//   sequence.start();
-// }
+
+function startSequencer() {
+  transport.start();
+  sequence.start();
+}
+
 transport.start();
 sequence.start();
 

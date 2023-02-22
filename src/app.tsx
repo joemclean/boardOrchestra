@@ -2,20 +2,10 @@ import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
 import * as Tone from 'tone';
-import { startSequencer } from './index';
-
-async function addSticky() {
-  const stickyNote = await miro.board.createStickyNote({
-    content: 'Hello, World!',
-  });
-
-  await miro.board.viewport.zoomTo(stickyNote);
-}
 
 async function startOrchestra() {
   await Tone.start();
 	console.log('audio is ready');
-  startSequencer();
 }
 
 const App: React.FC = () => {
