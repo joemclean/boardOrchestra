@@ -2,11 +2,6 @@ import { BoardViewport, Item, PositionMixin, Rect, StickyNote, WidgetMixin } fro
 import * as Tone from 'tone';
 import { GainToAudio } from 'tone';
 
-const panner1 = new Tone.Panner().toDestination();
-const panner2 = new Tone.Panner().toDestination();
-const panner3 = new Tone.Panner().toDestination();
-const panner4 = new Tone.Panner().toDestination();
-
 const synth1 = new Tone.Synth().toDestination();
 const synth2 = new Tone.Synth().toDestination();
 const synth3 = new Tone.Synth().toDestination();
@@ -14,10 +9,66 @@ const synth4 = new Tone.Synth().toDestination();
 
 const drumGain = new Tone.Gain().toDestination();
 
-let note1scheduler = 0;
-let note2scheduler = 0;
-let note3scheduler = 0;
-let note4scheduler = 0;
+class Voice {
+  private synth: Tone.Synth;
+  private panner: Tone.Panner;
+  private gain: Tone.Gain;
+
+  constructor(synth: Tone.Synth) {
+    this.gain = new Tone.Gain().toDestination();
+    this.panner = new Tone.Panner().connect(this.gain);
+    this.synth = synth.connect(this.panner);
+  }
+
+  setPan(panPosition: number) {
+    this.panner.pan.rampTo(panPosition, 0.001);
+  }
+
+  play(note: string, duration: number | string, time: number) {
+    this.synth.triggerAttackRelease(note, duration, time);
+  };
+}
+
+
+class Scheduler {
+  private noteSchedule: Array<string> = [];
+  public synthVoice: Voice;
+  note: string;
+
+  constructor(synthVoice: Voice, note: string) {
+    this.synthVoice = synthVoice;
+    this.note = note;
+  }
+
+  hasScheduledNotes(): boolean {
+    return (this.noteSchedule.length > 0);
+  }
+
+  scheduleNoteToPlay(){
+    this.noteSchedule.push(this.note);
+    console.log("schedule");
+    console.log(this.noteSchedule);
+  }
+
+  playScheduledNote(duration: number | string, time: number) {
+    console.log("Reaching function");
+    const note = this.noteSchedule[0];
+    console.log("Reaching function II");
+    this.synthVoice.play(note, duration, time);
+    this.noteSchedule.shift();
+    console.log(this.noteSchedule);
+  }
+}
+
+const createWidgetVoice = new Voice(synth1);
+const deleteWidgetVoice = new Voice(synth2);
+const updateSelectionVoice = new Voice(synth3);
+const updateWidgetVoice = new Voice(synth4);
+
+const createWidgetScheduler = new Scheduler(createWidgetVoice, "C3");
+const deleteWidgetScheduler = new Scheduler(deleteWidgetVoice, "C4");
+const updateSelectionScheduler = new Scheduler(updateSelectionVoice, "G3");
+const updateWidgetScheduler = new Scheduler(updateWidgetVoice, "E3");
 
 // create a new Tone.js MembraneSynth object to use as the kick drum
 const kick = new Tone.MembraneSynth().connect(drumGain);
@@ -46,7 +97,7 @@ const hihat2 = new Tone.MetalSynth({
   octaves: 1.5,
 }).connect(drumGain);
 
-drumGain.gain.value = 0.1;
+drumGain.gain.value = 0.0;
 
 
 // create a new Tone.js Transport object
@@ -72,31 +123,21 @@ const sequence = new Tone.Sequence((time, note) => {
   }
 
   if (iterator % 8 === 0) {
-    if (note1scheduler == 1) {
-      synth1.triggerAttackRelease("C4", "8n", time);
-      note1scheduler = 0;
-      console.log("note1");
+    if (createWidgetScheduler.hasScheduledNotes()) {
+      createWidgetScheduler.playScheduledNote("8n", time);
+    };
+
+    if (deleteWidgetScheduler.hasScheduledNotes()) {
+      deleteWidgetScheduler.playScheduledNote("8n", time);
+    };
+
+    if (updateWidgetScheduler.hasScheduledNotes()) {
+      updateWidgetScheduler.playScheduledNote("8n", time);
     };
   
-    if (note2scheduler == 1) {
-      synth2.triggerAttackRelease("G2", "8n", time);
-      note2scheduler = 0;
-      console.log("note2");
+    if (updateSelectionScheduler.hasScheduledNotes()) {
+      updateSelectionScheduler.playScheduledNote("8n", time);
     };
-  
-    if (note3scheduler == 1) {
-      synth3.triggerAttackRelease("G4", "8n", time);
-      note3scheduler = 0;
-      console.log("note3");
-    };
-  
-    if (note4scheduler == 1) {
-      synth4.triggerAttackRelease("C3", "8n", time);
-      synth4.triggerRelease(time + 0.1);
-      note4scheduler = 0;
-      console.log("note4");
-    };
-    
   }
 
   iterator++;
@@ -119,10 +160,6 @@ function calculateStereoLocation(viewport: Rect, widget: Rect): number {
   return panRatio;
 }
 
-function setPan(panner: Tone.Panner, panRatio: number){
-  panner.pan.rampTo(panRatio, 0.001);
-}
-
 async function init() {
   miro.board.ui.on('icon:click', async () => {
     await miro.board.ui.openPanel({url: 'app.html'});
@@ -134,8 +171,8 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      setPan(panner1, panRatio);
-      note1scheduler = 1;
+      updateWidgetScheduler.synthVoice.setPan(panRatio);
+      updateWidgetScheduler.scheduleNoteToPlay();
     }
   });
 
@@ -145,8 +182,8 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      setPan(panner2, panRatio);
-      note2scheduler = 1;
+      updateSelectionScheduler.synthVoice.setPan(panRatio);
+      updateSelectionScheduler.scheduleNoteToPlay();
     }
   });
 
@@ -156,8 +193,8 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      setPan(panner3, panRatio);
-      note3scheduler = 1;
+      createWidgetScheduler.synthVoice.setPan(panRatio);
+      createWidgetScheduler.scheduleNoteToPlay();
     }
   });
 
@@ -167,8 +204,8 @@ async function init() {
     const viewport = await miro.board.viewport.get();
     if (event.items.length > 0 && event.items[0].type == "sticky_note") {
       const panRatio = calculateStereoLocation(viewport, event.items[0]);
-      setPan(panner4, panRatio);
-      note4scheduler = 1;
+      deleteWidgetScheduler.synthVoice.setPan(panRatio);
+      deleteWidgetScheduler.scheduleNoteToPlay();
     }
   });
 }

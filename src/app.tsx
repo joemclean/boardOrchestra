@@ -17,17 +17,10 @@ async function startOrchestra() {
 }
 
 const App: React.FC = () => {
-  // React.useEffect(() => {
-  //   addSticky();
-  // }, []);
 
   return (
     <div className="grid wrapper">
       <div className="cs1 ce12">
-        <img src="/src/assets/congratulations.png" alt="" />
-      </div>
-      <div className="cs1 ce12">
-        <h1>Timer Orchestra!</h1>
         <p>Make music together.</p>
         <p>
           Create widgets on the board to try it out.
