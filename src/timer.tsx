@@ -41,8 +41,8 @@ function CountdownTimer({ onStart, onReset }: CountdownTimerProps) {
 
   return (
     <div>
-      <div>
-        <h1>{formatTime(timeLeft)}</h1>
+      <div className="time-display">
+        <h1 className="time-remaining">{formatTime(timeLeft)}</h1>
       </div>
       <div className="button-wrapper">
         <button className="button button-primary" onClick={handleStartClick}>Start</button>
