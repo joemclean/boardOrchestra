@@ -1,6 +1,6 @@
 console.log("Top of file");
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import {createRoot} from 'react-dom/client';
 
 import { Orchestra } from './orchestra';
@@ -9,6 +9,20 @@ import CountdownTimer from "./timer";
 const orchestra = new Orchestra();
 
 const App: React.FC = () => {
+  const [myItem, setMyItem] = useState(localStorage.getItem('eventStream'));
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setMyItem(localStorage.getItem('myItem'));
+      console.log("item", localStorage.getItem('myItem'));
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   return (
     <div className="grid wrapper">
