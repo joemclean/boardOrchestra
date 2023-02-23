@@ -8,21 +8,34 @@ import CountdownTimer from "./timer";
 
 const orchestra = new Orchestra();
 
+window.addEventListener('storage', function(e) {
+  console.log('Local storage changed:', e.key, e.oldValue, e.newValue);
+});
+
 const App: React.FC = () => {
-  const [myItem, setMyItem] = useState(localStorage.getItem('eventStream'));
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setMyItem(localStorage.getItem('myItem'));
-      console.log("item", localStorage.getItem('myItem'));
-    };
-
     window.addEventListener('storage', handleStorageChange);
-
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  const handleStorageChange = (e: any) => {
+    console.log('Local storage changed:', e.key, e.oldValue, e.newValue);
+    if (e.newValue === "moveWidget") {
+      moveWidget();
+    }
+    if (e.newValue === "deleteWidget") {
+      deleteWidget();
+    }
+    if (e.newValue === "createWidget") {
+      createWidget();
+    }
+    
+    // Update state or do something else in response to the change
+  };
+
 
   return (
     <div className="grid wrapper">
@@ -31,12 +44,12 @@ const App: React.FC = () => {
   );
 };
 
-  miro.board.ui.on('experimental:items:update', async (event)=> {
-    const viewport = await miro.board.viewport.get();
-    if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
-      orchestra.updateWidgetScheduler.synthVoice.setPan(panRatio);
-    }
+  function moveWidget() {
+    // const viewport = await miro.board.viewport.get();
+    // if (event.items.length > 0 && event.items[0].type == "sticky_note") {
+    //   const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
+    //   orchestra.updateWidgetScheduler.synthVoice.setPan(panRatio);
+    // }
     if (Math.random() > 0.5) {
       orchestra.updateWidgetScheduler.scheduleNoteToPlay("E5");
       orchestra.updateWidgetScheduler.scheduleNoteToPlay("A5");
@@ -44,7 +57,7 @@ const App: React.FC = () => {
       orchestra.updateWidgetScheduler.scheduleNoteToPlay("A5");
       orchestra.updateWidgetScheduler.scheduleNoteToPlay("G5");
     }
-  });
+  };
 
   miro.board.ui.on('selection:update', async (event)=> {
     const viewport = await miro.board.viewport.get();
@@ -68,23 +81,23 @@ const App: React.FC = () => {
     }
   });
 
-  miro.board.ui.on('items:create', async (event)=> {
-    const viewport = await miro.board.viewport.get();
-    if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
-      orchestra.createWidgetScheduler.synthVoice.setPan(panRatio);
-    }
-    orchestra.createWidgetScheduler.scheduleNoteToPlay("G2");
-  });
+function createWidget() {
+  // const viewport = await miro.board.viewport.get();
+  // // if (event.items.length > 0 && event.items[0].type == "sticky_note") {
+  // //   const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
+  // //   orchestra.createWidgetScheduler.synthVoice.setPan(panRatio);
+  // // }
+  orchestra.createWidgetScheduler.scheduleNoteToPlay("G2");
+};
 
-  miro.board.ui.on('items:delete', async (event)=> {
-    const viewport = await miro.board.viewport.get();
-    if (event.items.length > 0 && event.items[0].type == "sticky_note") {
-      const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
-      orchestra.deleteWidgetScheduler.synthVoice.setPan(panRatio);
-    }
-    orchestra.deleteWidgetScheduler.scheduleNoteToPlay("C2");
-  });
+ function deleteWidget() {
+  // const viewport = await miro.board.viewport.get();
+  // if (event.items.length > 0 && event.items[0].type == "sticky_note") {
+  //   const panRatio = orchestra.calculateStereoLocation(viewport, event.items[0]);
+  //   orchestra.deleteWidgetScheduler.synthVoice.setPan(panRatio);
+  // }
+  orchestra.deleteWidgetScheduler.scheduleNoteToPlay("C2");
+};
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
