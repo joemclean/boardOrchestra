@@ -4,13 +4,9 @@ import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 
 import { Orchestra } from './orchestra';
+import CountdownTimer from "./timer";
 
 const orchestra = new Orchestra();
-
-function startOrchestraInstance(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  event.preventDefault();
-  orchestra.startOrchestra();
-}
 
 function startOrchestraSequencer(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
   event.preventDefault();
@@ -26,6 +22,7 @@ const App: React.FC = () => {
 
   return (
     <div className="grid wrapper">
+      <CountdownTimer onStart={() => {console.log("test")}} onReset={() => {console.log("test")}}/>
       <div className="cs1 ce12">
         <a
           className="button button-primary"
