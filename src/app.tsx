@@ -8,37 +8,11 @@ import CountdownTimer from "./timer";
 
 const orchestra = new Orchestra();
 
-function startOrchestraSequencer(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-  event.preventDefault();
-  orchestra.startSequencer();
-}
-
-function stopOrchestraSequencer(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>){
-  event.preventDefault();
-  orchestra.stopSequencer();
-}
-
 const App: React.FC = () => {
 
   return (
     <div className="grid wrapper">
-      <CountdownTimer onStart={() => {console.log("test")}} onReset={() => {console.log("test")}}/>
-      <div className="cs1 ce12">
-        <a
-          className="button button-primary"
-          href=""
-          onClick={startOrchestraSequencer}
-        >
-          Play
-        </a>
-        <a
-          className="button button-primary"
-          href=""
-          onClick={stopOrchestraSequencer}
-        >
-          Stop
-        </a>
-      </div>
+      <CountdownTimer onStart={() => {orchestra.startSequencer()}} onReset={() => {orchestra.stopSequencer()}}/>
     </div>
   );
 };

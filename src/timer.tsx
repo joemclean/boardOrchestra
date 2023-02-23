@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import './timer.css';
 
 type CountdownTimerProps = {
   onStart: () => void;
@@ -40,9 +41,13 @@ function CountdownTimer({ onStart, onReset }: CountdownTimerProps) {
 
   return (
     <div>
-      <div>{formatTime(timeLeft)}</div>
-      <button onClick={handleStartClick}>Start</button>
-      <button onClick={handleResetClick}>Reset</button>
+      <div>
+        <h1>{formatTime(timeLeft)}</h1>
+      </div>
+      <div className="button-wrapper">
+        <button className="button button-primary" onClick={handleStartClick}>Start</button>
+        <button className="button button-primary" onClick={handleResetClick}>Reset</button>
+      </div>
     </div>
   );
 }
