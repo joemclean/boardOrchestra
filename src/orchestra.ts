@@ -78,6 +78,8 @@ export class Orchestra {
   private transport: Transport = Tone.Transport;
   private iterator: number = 0;
   private sequence: Tone.Sequence;
+
+  private isInitialized = false;
   
   constructor(){
 
@@ -258,10 +260,13 @@ export class Orchestra {
   async startOrchestra(){
     await Tone.start();
     console.log('audio is ready');
+    this.isInitialized = true;
   }
 
-  startSequencer() {
-    console.log("startfunction");
+  async startSequencer() {
+    if (!this.isInitialized) {
+      await this.startOrchestra();
+    }
     this.sequence.start();
   }
   

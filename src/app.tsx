@@ -30,26 +30,17 @@ const App: React.FC = () => {
         <a
           className="button button-primary"
           href=""
-          onClick={startOrchestraInstance}
+          onClick={startOrchestraSequencer}
         >
-          Start Orchestra
+          Play
         </a>
-        <div>
-          <a
-            className="button button-primary"
-            href=""
-            onClick={startOrchestraSequencer}
-          >
-            Play
-          </a>
-          <a
-            className="button button-primary"
-            href=""
-            onClick={stopOrchestraSequencer}
-          >
-            Stop
-          </a>
-        </div>
+        <a
+          className="button button-primary"
+          href=""
+          onClick={stopOrchestraSequencer}
+        >
+          Stop
+        </a>
       </div>
     </div>
   );
