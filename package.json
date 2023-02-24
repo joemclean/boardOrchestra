@@ -1,11 +1,14 @@
 {
   "name": "timer-orchestra",
+  "homepage": "https://joemclean.github.io/boardOrchestra/",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "mirotone": "4",
@@ -19,6 +22,7 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "gh-pages": "^5.0.0",
     "typescript": "4.8.4",
     "vite": "3.0.3"
   }
